@@ -7,6 +7,8 @@ package tools;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -76,5 +78,23 @@ public class MyTool {
         return false;
     }
     
-    
+    public static void writeFile(String fileName, List list){
+        if(list.size() == 0){
+            System.out.println("Empty list.");
+            return;
+        }
+        try{
+            File f = new File(fileName);
+            FileWriter fw = new FileWriter(f);
+            PrintWriter pw = new PrintWriter(fw);
+            for(int i = 0; i < list.size(); i++){
+                pw.println(list.get(i));
+            }
+            pw.close();
+            fw.close();
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
+    }
 }
