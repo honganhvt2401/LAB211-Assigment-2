@@ -73,7 +73,12 @@ public class Product implements Comparable<Product> {
     public void setStatus(String status) {
         this.status = status;
     }
-
+    
+    @Override
+    public String toString(){
+        return ID + SEPERATOR + name + SEPERATOR + price + SEPERATOR + quantity + SEPERATOR + status + "\n";
+    }
+    
     @Override
     public int compareTo(Product o) {
         return this.getID().compareToIgnoreCase(o.getID());
