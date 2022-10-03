@@ -12,7 +12,9 @@ import java.util.HashSet;
 import java.util.List;
 import tools.MyTool;
 import java.util.Scanner;
+import java.util.*;
 import java.util.Set;
+import static tools.MyTool.validStr;
 
 /**
  *
@@ -586,13 +588,16 @@ public class ProductList extends ArrayList<Product> {
                 System.out.println("+----------+----------------------------+-----------+------------+--------------------+");
 
                 MyTool.SC = new Scanner(System.in);
+                System.out.println("Note: This option won't allow you to update the ID.");
                 System.out.print("Choose the product you want to update [1.." + tempList.size() + "]: ");
                 int listChoose = MyTool.SC.nextInt() - 1;
 
                 boolean valid = false;
                 String newName;
-                double newPrice;
-                int newQuantity;
+                String newPrice;
+                double toDouble = 0;
+                String newQuantity;
+                int toInt = 0;
                 String newStatus;
                 MyTool.SC = new Scanner(System.in);
                 for (int i = 0; i < this.size(); i++) {
@@ -600,7 +605,7 @@ public class ProductList extends ArrayList<Product> {
                         do {
                             valid = false;
                             boolean spaceDetect = false;
-                            System.out.print("Enter product name: ");
+                            System.out.print("Enter product name (blank for making no changes): ");
                             newName = MyTool.SC.nextLine().toUpperCase();
                             char[] ch = newName.toCharArray();
                             for (int j = 0; j < ch.length; j++) {
@@ -608,48 +613,71 @@ public class ProductList extends ArrayList<Product> {
                                     spaceDetect = true;
                                 }
                             }
-                            if (newName.length() < 5 || spaceDetect == true || (newName.length() < 5 && spaceDetect == true)) {
-                                System.out.println("Input must be at least 5 character and must not contain space(s)");
-                                valid = false;
+                            if (!newName.isEmpty()) {
+                                if (newName.length() < 5 || spaceDetect == true || (newName.length() < 5 && spaceDetect == true)) {
+                                    System.out.println("Input must be at least 5 character and must not contain space(s)");
+                                    valid = false;
+                                }
                             } else {
+                                newName = this.get(i).getName();
                                 valid = true;
                             }
                         } while (valid = false);
                         do {
                             valid = false;
-                            System.out.print("Enter price of product: ");
-                            newPrice = MyTool.SC.nextDouble();
-                            if (!(newPrice >= 0 && newPrice <= 10000)) {
-                                System.out.println("Invalid value, try again");
-                                valid = false;
-                            } else {
+                            System.out.print("Enter price of product (blank for making no changes): ");
+                            newPrice = MyTool.SC.nextLine();
+                            if (newPrice.isEmpty()) {
+                                toDouble = this.get(i).getPrice();
                                 valid = true;
+                            } else {
+
+                                toDouble = Double.valueOf(newPrice);
+                                if (!(toDouble >= 0 && toDouble <= 10000)) {
+                                    System.out.println("Invalid value, try again");
+                                    valid = false;
+                                } else {
+                                    System.out.println("Invalid input, try again");
+                                    valid = false;
+                                }
                             }
                         } while (valid = false);
                         do {
                             valid = false;
                             System.out.print("Enter quantity of product: ");
-                            newQuantity = MyTool.SC.nextInt();
-                            if (!(newQuantity >= 0 && newQuantity <= 10000)) {
-                                System.out.println("Invalid value, try again");
-                                valid = false;
-                            } else {
+                            newQuantity = MyTool.SC.nextLine();
+                            if (newQuantity.isEmpty()) {
+                                toDouble = this.get(i).getPrice();
                                 valid = true;
+                            } else {
+
+                                toInt = Integer.valueOf(newQuantity);
+                                if (!(toInt >= 0 && toInt <= 10000)) {
+                                    System.out.println("Invalid value, try again");
+                                    valid = false;
+                                } else {
+                                    System.out.println("Invalid input, try again");
+                                    valid = false;
+                                }
                             }
                         } while (valid = false);
                         do {
                             valid = false;
-                            newStatus = MyTool.readNonBlank("Enter availability: ").toUpperCase();
-                            if (!(newStatus.equals("AVAILABLE") || newStatus.equals("NOT-AVAILABLE"))) {
-                                System.out.println("Invalid input, try again");
-                                valid = false;
+                            System.out.print("Enter availability: ");
+                            newStatus = MyTool.SC.nextLine().toUpperCase();
+                            if (!newStatus.isEmpty()) {
+                                if (!(newStatus.equals("AVAILABLE") || newStatus.equals("NOT-AVAILABLE"))) {
+                                    System.out.println("Invalid input, try again");
+                                    valid = false;
+                                }
                             } else {
+                                newStatus = this.get(i).getStatus();
                                 valid = true;
                             }
                         } while (valid = false);
                         this.get(i).setName(newName);
-                        this.get(i).setPrice(newPrice);
-                        this.get(i).setQuantity(newQuantity);
+                        this.get(i).setPrice(toDouble);
+                        this.get(i).setQuantity(toInt);
                         this.get(i).setStatus(newStatus);
                         System.out.println("Product " + this.get(i).getID() + " has been updated");
                     }
@@ -682,62 +710,87 @@ public class ProductList extends ArrayList<Product> {
                 System.out.println("+----------+----------------------------+-----------+------------+--------------------+");
 
                 MyTool.SC = new Scanner(System.in);
+                System.out.println("Note: This option won't allow you to update the name.");
                 System.out.print("Choose the product you want to update [1.." + tempList.size() + "]: ");
                 int listChoose = MyTool.SC.nextInt() - 1;
 
                 boolean valid = false;
                 String newID;
-                double newPrice;
-                int newQuantity;
+                String newPrice;
+                double toDouble = 0;
+                String newQuantity;
+                int toInt = 0;
                 String newStatus;
                 for (int i = 0; i < this.size(); i++) {
                     if (this.get(i).getName().equals(tempList.get(listChoose).getName())) {
                         do {
-                            newID = MyTool.readPattern("Enter product ID: ", Product.ID_FORMAT);
-                            for (int j = 0; j < this.size(); j++) {
-                                if (this.get(j).getID().equals(newID)) {
-                                    System.out.println("Duplicated ID, try again");
+                            MyTool.SC = new Scanner(System.in);
+                            System.out.print("Enter product ID (blank for making no changes): ");
+                            newID = MyTool.SC.nextLine();
+                            if (!newID.isEmpty()) {
+                                if (newID.matches(Product.ID_FORMAT)) {
+                                    for (int j = 0; j < this.size(); j++) {
+                                        if (this.get(j).getID().equals(newID)) {
+                                            System.out.println("Duplicated ID, try again");
+                                            valid = false;
+                                        } else {
+                                            valid = true;
+                                        }
+                                    }
+                                }
+                            } else {
+                                newID = this.get(i).getID();
+                                valid = true;
+                            }
+
+                        } while (valid = false);
+                        do {
+                            valid = false;
+                            System.out.print("Enter price of product (blank for making no changes): ");
+                            newPrice = MyTool.SC.nextLine();
+                            if (newPrice.isEmpty()) {
+                                toDouble = this.get(i).getPrice();
+                                valid = true;
+                            } else {
+                                toDouble = Double.valueOf(newPrice);
+                                if (!(toDouble >= 0 && toDouble <= 10000)) {
+                                    System.out.println("Invalid value, try again");
                                     valid = false;
-                                } else if (this.get(i).getID().equals(tempList.get(i).getID())) {
-                                    valid = true;
                                 }
                             }
                         } while (valid = false);
                         do {
                             valid = false;
-                            System.out.print("Enter price of product: ");
-                            newPrice = MyTool.SC.nextDouble();
-                            if (!(newPrice >= 0 && newPrice <= 10000)) {
-                                System.out.println("Invalid value, try again");
-                                valid = false;
-                            } else {
-                                valid = true;
-                            }
-                        } while (valid = false);
-                        do {
-                            valid = false;
                             System.out.print("Enter quantity of product: ");
-                            newQuantity = MyTool.SC.nextInt();
-                            if (!(newQuantity >= 0 && newQuantity <= 10000)) {
-                                System.out.println("Invalid value, try again");
-                                valid = false;
-                            } else {
+                            newQuantity = MyTool.SC.nextLine();
+                            if (newQuantity.isEmpty()) {
+                                toDouble = this.get(i).getPrice();
                                 valid = true;
+                            } else {
+                                toInt = Integer.valueOf(newQuantity);
+                                if (!(toInt >= 0 && toInt <= 10000)) {
+                                    System.out.println("Invalid value, try again");
+                                    valid = false;
+                                }
                             }
                         } while (valid = false);
                         do {
                             valid = false;
-                            newStatus = MyTool.readNonBlank("Enter availability: ").toUpperCase();
-                            if (!(newStatus.equals("AVAILABLE") || newStatus.equals("NOT-AVAILABLE"))) {
-                                System.out.println("Invalid input, try again");
-                                valid = false;
+                            System.out.print("Enter availability: ");
+                            newStatus = MyTool.SC.nextLine().toUpperCase();
+                            if (!newStatus.isEmpty()) {
+                                if (!(newStatus.equals("AVAILABLE") || newStatus.equals("NOT-AVAILABLE"))) {
+                                    System.out.println("Invalid input, try again");
+                                    valid = false;
+                                }
                             } else {
+                                newStatus = this.get(i).getStatus();
                                 valid = true;
                             }
                         } while (valid = false);
                         this.get(i).setID(newID);
-                        this.get(i).setPrice(newPrice);
-                        this.get(i).setQuantity(newQuantity);
+                        this.get(i).setPrice(toDouble);
+                        this.get(i).setQuantity(toInt);
                         this.get(i).setStatus(newStatus);
                         System.out.println("Product " + this.get(listChoose).getName() + " has been updated");
                     }
@@ -803,7 +856,7 @@ public class ProductList extends ArrayList<Product> {
                 MyTool.SC = new Scanner(System.in);
                 System.out.print("Choose the product you want to delete [1.." + tempList.size() + "]: ");
                 int listChoose = MyTool.SC.nextInt() - 1;
-                
+
                 for (int i = 0; i < this.size(); i++) {
                     if (this.get(i).getName().equals(tempList.get(listChoose).getName())) {
                         this.remove(this.get(i));
@@ -813,16 +866,16 @@ public class ProductList extends ArrayList<Product> {
             } else {
                 System.out.println("Not found");
             }
-            
+
         }
     }
-    
-    public void writeToFile(){
+
+    public void writeToFile() {
         MyTool.writeFile(dataFile, this);
         System.out.println("Completed overwriting the file");
     }
-    
-    public void printFromFile(){
+
+    public void printFromFile() {
         List<String> str = MyTool.readLinesFromFile(dataFile);
         List<Product> tempList = new ArrayList<Product>();
         for (String s : str) {

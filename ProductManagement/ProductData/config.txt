@@ -1,1 +1,1 @@
-File of product: product.txt
+File of product: product.dat
