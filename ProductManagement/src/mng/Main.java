@@ -21,7 +21,7 @@ public class Main {
         int choice = 0;
         do {
             System.out.println("---------------------------------------------------------------------------------------");
-            choice = menu.getChoice("-------------------------------[PRODUCT MANAGER v1.0]----------------------------------");
+            choice = menu.getChoice("-------------------------------[PRODUCT MANAGER v3.0]----------------------------------");
             switch (choice) {
                 case 1:
                     pList.printAllProduct();

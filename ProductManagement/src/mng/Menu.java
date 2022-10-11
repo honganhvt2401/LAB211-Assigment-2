@@ -5,6 +5,7 @@
 package mng;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 import tools.MyTool;
 
 /**
@@ -12,6 +13,8 @@ import tools.MyTool;
  * @author VU HONG ANH
  */
 public class Menu extends ArrayList<String> {
+
+    public static final String CHOICE_FORMAT = "\\d{1}";
 
     public Menu() {
         super();
@@ -24,14 +27,29 @@ public class Menu extends ArrayList<String> {
     }
 
     public int getChoice(String title) {
-        System.out.println(title);
-        int choice;
-        for (int i = 0; i < this.size(); i++) {
-            System.out.println("   " + (i + 1) + "-" + this.get(i));
-        }
-        System.out.println("   Others-Exit");
-        System.out.print("Choose [1..7]: ");
-        choice = MyTool.SC.nextInt();
+
+        String inputString;
+        int choice = 0;
+        boolean valid = false;
+        MyTool.SC = new Scanner(System.in);
+        do {
+            System.out.println(title);
+            for (int i = 0; i < this.size(); i++) {
+                System.out.println("   " + (i + 1) + "-" + this.get(i));
+            }
+            System.out.println("   Others-Exit");
+            System.out.print("Choose [1..7]: ");
+
+            inputString = MyTool.SC.nextLine();
+            if (inputString.matches(CHOICE_FORMAT)) {
+                choice = Integer.parseInt(inputString);
+                valid = true;
+            } else {
+                System.out.println("Invalid choice, try again");
+                valid = false;
+            }
+        } while (valid == false);
         return choice;
+
     }
 }

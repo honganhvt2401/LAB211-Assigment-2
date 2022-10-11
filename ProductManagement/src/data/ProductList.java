@@ -22,6 +22,7 @@ import static tools.MyTool.validStr;
  */
 public class ProductList extends ArrayList<Product> {
 
+    public static final String INPUT_PATTERN = "\\w{1}|YES|NO";
     private String dataFile = "";
 
     public void initWithFile() {
@@ -45,6 +46,7 @@ public class ProductList extends ArrayList<Product> {
             System.out.println("-------------------------------------[PRINT MENU]--------------------------------------");
             System.out.println("   1-Print list ascendingly");
             System.out.println("   2-Print list descendingly");
+            System.out.println("   3-Print list without sorting");
             System.out.println("   Others-Return");
             System.out.print("Choose [1..2]: ");
             choice = MyTool.SC.nextInt();
@@ -56,8 +58,11 @@ public class ProductList extends ArrayList<Product> {
                 case 2:
                     sub2();
                     break;
+                case 3:
+                    sub3();
+                    break;
             }
-        } while (choice > 0 && choice <= 2);
+        } while (choice > 0 && choice <= 3);
         /*if (this.isEmpty()) {
             System.out.println("Empty list!");
         } else {
@@ -72,53 +77,47 @@ public class ProductList extends ArrayList<Product> {
     }
 
     public void addProduct() {
-        String ID, name, status;
+        String ID, name, status = "";
         double price;
         int quantity;
-        boolean valid = false;
+        boolean valid = true;
         do {
+            valid = true;
             ID = MyTool.readPattern("Enter product ID: ", Product.ID_FORMAT);
             for (int i = 0; i < this.size(); i++) {
                 if (this.get(i).getID().equals(ID)) {
                     System.out.println("Duplicated ID, try again");
                     valid = false;
-                } else {
-                    valid = true;
+                    break;
                 }
             }
-        } while (valid = false);
+        } while (valid == false);
         MyTool.SC = new Scanner(System.in);
         do {
-            valid = false;
-            boolean spaceDetect = false;
+            valid = true;
+            int count = 0;
             System.out.print("Enter product name: ");
             name = MyTool.SC.nextLine().toUpperCase();
-            char[] ch = name.toCharArray();
-            for (int i = 0; i < ch.length; i++) {
-                if (ch[i] == ' ') {
-                    spaceDetect = true;
-                }
-            }
-            if (name.length() < 5 || spaceDetect == true || (name.length() < 5 && spaceDetect == true)) {
-                System.out.println("Input must be at least 5 character and must not contain space(s)");
-                valid = false;
-            } else {
-                int duplicate = 0;
-                for (int i = 0; i < this.size(); i++) {
-                    if (this.get(i).getName().equals(name)) {
-                        duplicate += 1;
+            if (name.length() >= 5) {
+
+                char[] ch = name.toCharArray();
+                for (int i = 0; i < ch.length; i++) {
+                    if (ch[i] == ' ') {
+                        System.out.println("Input must not contain space(s), try again");
+                        valid = false;
+                        break;
+                    } else {
+                        count += 1;
                     }
                 }
-                if (duplicate != 0) {
-                    System.out.println("Duplicated name, try again");
-                    valid = false;
-                } else {
-                    valid = true;
-                }
+            } else {
+                System.out.println("Input must be at least 5 character long, try again");
+                valid = false;
             }
-        } while (valid = false);
+
+        } while (valid == false);
         do {
-            valid = false;
+            valid = true;
             System.out.print("Enter price of product: ");
             price = MyTool.SC.nextDouble();
             if (!(price >= 0 && price <= 10000)) {
@@ -129,24 +128,31 @@ public class ProductList extends ArrayList<Product> {
             }
         } while (valid = false);
         do {
-            valid = false;
+            valid = true;
             System.out.print("Enter quantity of product: ");
             quantity = MyTool.SC.nextInt();
-            if (!(quantity >= 0 && quantity <= 10000)) {
-                System.out.println("Invalid value, try again");
-                valid = false;
+            if (quantity != 0) {
+                if (!(quantity > 0 && quantity <= 10000)) {
+                    System.out.println("Invalid value, try again");
+                    valid = false;
+                } else {
+                    valid = true;
+                }
             } else {
+                status = "NOT-AVAILABLE";
                 valid = true;
             }
         } while (valid = false);
         do {
-            valid = false;
-            status = MyTool.readNonBlank("Enter availability: ").toUpperCase();
-            if (!(status.equals("AVAILABLE") || status.equals("NOT-AVAILABLE"))) {
-                System.out.println("Invalid input, try again");
-                valid = false;
-            } else {
-                valid = true;
+            valid = true;
+            if (quantity != 0) {
+                status = MyTool.readNonBlank("Enter availability: ").toUpperCase();
+                if (!(status.equals("AVAILABLE") || status.equals("NOT-AVAILABLE"))) {
+                    System.out.println("Invalid input, try again");
+                    valid = false;
+                } else {
+                    valid = true;
+                }
             }
         } while (valid = false);
         Product p = new Product(ID, name, price, quantity, status);
@@ -319,16 +325,30 @@ public class ProductList extends ArrayList<Product> {
     }
 
     public void printResult(List<Product> tempList) {
+        String confirm;
+        MyTool.SC = new Scanner(System.in);
         if (tempList.size() == 0) {
             System.out.println("Not found!");
         } else {
-            System.out.println("+----------+----------------------------+-----------+------------+--------------------+");
-            System.out.println("|    ID    |            NAME            |   PRICE   |  QUANTITY  |       STATUS       |");
-            System.out.println("+----------+----------------------------+-----------+------------+--------------------+");
-            for (Product p : tempList) {
-                System.out.format("|%-10s|%-28s|%-11.2f|%-12d|%-20s|\n", p.getID(), p.getName(), p.getPrice(), p.getQuantity(), p.getStatus());
+            confirm = MyTool.readPattern("Do you want to print total price of product? (Y/N): ", INPUT_PATTERN);
+            if ((confirm.equals("Y")) || (confirm.equals("YES"))) {
+                System.out.println("+----------+----------------------------+-----------+------------+--------------------+-----------+");
+                System.out.println("|    ID    |            NAME            |   PRICE   |  QUANTITY  |       STATUS       |   TOTAL   |");
+                System.out.println("+----------+----------------------------+-----------+------------+--------------------+-----------+");
+                for (Product p : tempList) {
+                    System.out.format("|%-10s|%-28s|%-11.2f|%-12d|%-20s|%-11.2f|\n", p.getID(), p.getName(), p.getPrice(), p.getQuantity(), p.getStatus(), (p.getPrice() * p.getQuantity()));
+                }
+                System.out.println("+----------+----------------------------+-----------+------------+--------------------+-----------+");
             }
-            System.out.println("+----------+----------------------------+-----------+------------+--------------------+");
+            if ((confirm.equals("N")) || (confirm.equals("NO"))) {
+                System.out.println("+----------+----------------------------+-----------+------------+--------------------+");
+                System.out.println("|    ID    |            NAME            |   PRICE   |  QUANTITY  |       STATUS       |");
+                System.out.println("+----------+----------------------------+-----------+------------+--------------------+");
+                for (Product p : tempList) {
+                    System.out.format("|%-10s|%-28s|%-11.2f|%-12d|%-20s|\n", p.getID(), p.getName(), p.getPrice(), p.getQuantity(), p.getStatus());
+                }
+                System.out.println("+----------+----------------------------+-----------+------------+--------------------+");
+            }
         }
     }
 
@@ -380,6 +400,10 @@ public class ProductList extends ArrayList<Product> {
                     break;
             }
         } while (subChoice2 >= 1 && subChoice2 <= 3);
+    }
+
+    public void sub3() {
+        printResult(this);
     }
 
     public void ascending(int swap) {
