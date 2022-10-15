@@ -327,6 +327,7 @@ public class ProductList extends ArrayList<Product> {
     public void printResult(List<Product> tempList) {
         String confirm;
         MyTool.SC = new Scanner(System.in);
+        
         if (tempList.size() == 0) {
             System.out.println("Not found!");
         } else {
@@ -336,7 +337,7 @@ public class ProductList extends ArrayList<Product> {
                 System.out.println("|    ID    |            NAME            |   PRICE   |  QUANTITY  |       STATUS       |   TOTAL   |");
                 System.out.println("+----------+----------------------------+-----------+------------+--------------------+-----------+");
                 for (Product p : tempList) {
-                    System.out.format("|%-10s|%-28s|%-11.2f|%-12d|%-20s|%-11.2f|\n", p.getID(), p.getName(), p.getPrice(), p.getQuantity(), p.getStatus(), (p.getPrice() * p.getQuantity()));
+                    System.out.format("|%-10s|%-28s|%11.2f|%12d|%-20s|%-11.2f|\n", p.getID(), p.getName(), p.getPrice(), p.getQuantity(), p.getStatus(), (p.getPrice() * p.getQuantity()));
                 }
                 System.out.println("+----------+----------------------------+-----------+------------+--------------------+-----------+");
             }
@@ -345,7 +346,7 @@ public class ProductList extends ArrayList<Product> {
                 System.out.println("|    ID    |            NAME            |   PRICE   |  QUANTITY  |       STATUS       |");
                 System.out.println("+----------+----------------------------+-----------+------------+--------------------+");
                 for (Product p : tempList) {
-                    System.out.format("|%-10s|%-28s|%-11.2f|%-12d|%-20s|\n", p.getID(), p.getName(), p.getPrice(), p.getQuantity(), p.getStatus());
+                    System.out.format("|%-10s|%-28s|%11.2f|%12d|%-20s|\n", p.getID(), p.getName(), p.getPrice(), p.getQuantity(), p.getStatus());
                 }
                 System.out.println("+----------+----------------------------+-----------+------------+--------------------+");
             }
